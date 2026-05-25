@@ -63,13 +63,21 @@ Database: LIS
 
 ### Solution:
 ```
-select distinct(title) from
-  book_catalogue natural join book_copies natural join
-  book_issue natural join members
-  where member_type = ’PG’
-except
-select distinct(title) from
-  book_catalogue natural join book_copies natural join
-  book_issue natural join members
-  where member_type = ’UG’
+SELECT DISTINCT bc.title
+FROM book_catalogue bc
+JOIN book_copies bcp ON bc.ISBN_no = bcp.ISBN_no
+JOIN book_issue bi ON bcp.accession_no = bi.accession_no
+JOIN members m ON bi.member_no = m.member_no
+JOIN students s ON m.roll_no = s.roll_no
+WHERE s.degree LIKE 'M%'
+
+EXCEPT
+
+SELECT DISTINCT bc.title
+FROM book_catalogue bc
+JOIN book_copies bcp ON bc.ISBN_no = bcp.ISBN_no
+JOIN book_issue bi ON bcp.accession_no = bi.accession_no
+JOIN members m ON bi.member_no = m.member_no
+JOIN students s ON m.roll_no = s.roll_no
+WHERE s.degree LIKE 'B%';
 ```
